@@ -35,6 +35,8 @@ app.post('/', (req, res) => {
     .catch(err => {
       // Handle errors
       console.log(err)
+      res.write(JSON.stringify(err));
+      res.end();
     })
 
 });
