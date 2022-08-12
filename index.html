@@ -8,7 +8,7 @@
     <meta name="author" content="">
     <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
 
-    <title>Signin Template for Bootstrap</title>
+    <title>Make a request to vndb api</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/sign-in/">
 
@@ -21,10 +21,8 @@
 
   <body class="text-center">
     <form class="form-signin" action="/" method="post">
-      <img class="mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
-      <h1 class="h3 mb-3 font-weight-normal">Sign up to newsletter</h1>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
-      <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
+      <input type="text" name="apiRequest" placeholder="type request here" size="100"/> <br /><br />
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Search</button>
     </form>
   </body>
 </html>

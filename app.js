@@ -22,8 +22,10 @@ app.get('/', (req, res) => {
 });
 
 app.post('/', (req, res) => {
+  var request = String(req.body.apiRequest);
+  console.log(request)
   vndb
-    .query('get quote basic (id=18397)')
+    .query(request)
     .then(response => {
       // Use the response
       console.log(response);
