@@ -39,9 +39,6 @@ app.post('/', async function(req, res){
     page+=1
   }
 
-
-
-
   var vnids = []
   for (var vn of vnList)
   {
@@ -55,6 +52,7 @@ app.post('/', async function(req, res){
   var quoteList = [];
   while (more == true){
     x = await call("get quote basic (id=[" + vnids.toString() +"]) {\"page\":"+ page +",\"results\":25,\"sort\":\"id\"}");
+    console.log(x)
     quoteList = quoteList.concat(x.items);
     more = x.more
     page+=1
@@ -81,6 +79,7 @@ app.post('/', async function(req, res){
   var aliasesList = [];
   while (more == true){
     z = await call("get vn details (id=[" + ids.toString() +"]) {\"page\":"+ page +",\"results\":25,\"sort\":\"id\"}");
+    console.log(z)
     aliasesList = aliasesList.concat(z.items);
     more = z.more
     page+=1
