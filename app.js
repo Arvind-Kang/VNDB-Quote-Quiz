@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const request = require("request");
 const VNDB = require('vndb-api')
 const https = require("https");
-
+const fs = require('fs');
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -13,6 +13,14 @@ app.set('view engine', 'ejs');
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
 
+let rawdata = fs.readFileSync('vns.json');
+let vns = JSON.parse(rawdata);
+
+let vnids = {}
+for (var vn of vns)
+{
+  vnids[(vn.id).substring(1)] = vn.title
+}
 const vndb = new VNDB('ArvindKang', {
   // optionally, override any connection options you need to here, like
   minConnection: 1,
@@ -20,9 +28,12 @@ const vndb = new VNDB('ArvindKang', {
 })
 
 app.get('/', (req, res) => {
-  var day = "tuesday";
   res.render('index');
 });
+
+app.get('/error', (req, res) => {
+  res.render('fail');
+})
 
 app.post('/', async function(req, res){
   var id = String(req.body.apiRequest);
@@ -33,46 +44,23 @@ app.post('/', async function(req, res){
   var vnList = [];
   while (more == true){
     o = await call("get ulist basic, (uid=" + id +") {\"page\":"+ page +",\"results\":100}")
-    console.log(o)
+    if (o == "ERROR"){
+        console.log("error")
+        res.render('fail', {nameDict: JSON.stringify(nameDict)});
+        return
+    }
     vnList = vnList.concat(o.items);
     more = o.more
     page+=1
   }
 
-  var vnids = []
-  for (var vn of vnList)
-  {
-    vnids.push(vn.vn)
-  }
-  var quoteList = [];
-
-  var more = true;
-  var page = 1
-  var x;
-  var quoteList = [];
-  while (more == true){
-    x = await call("get quote basic (id=[" + vnids.toString() +"]) {\"page\":"+ page +",\"results\":25,\"sort\":\"id\"}");
-    console.log(x)
-    quoteList = quoteList.concat(x.items);
-    more = x.more
-    page+=1
-
-  }
-
-  var dict = {};
   var nameDict = {}
-  var ids = []
-  for (var item of quoteList)
+  for (var item of vnList)
   {
-    if (item.id in dict){
-      dict[item.id].push(item.quote);
-    } else{
-      dict[item.id] = [item.quote];
-      // nameDict[item.id] = [item.title]
-      nameDict[item.id] = item.title
-      ids.push(item.id);
-    }
+    nameDict[(item.vn)] = vnids[item.vn]
   }
+
+  console.log(nameDict)
 
   // more = true;
   // page = 1
@@ -100,7 +88,7 @@ app.post('/', async function(req, res){
   //   }
   //
   // }
-  res.render('quiz', {dict: JSON.stringify(dict), nameDict: JSON.stringify(nameDict)});
+  res.render('quiz', {nameDict: JSON.stringify(nameDict)});
 
 });
 
@@ -119,6 +107,7 @@ async function call(query){
     .catch(err => {
       // Handle errors
       console.log(err)
+      res = "ERROR"
     })
     return res
 }
