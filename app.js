@@ -68,7 +68,8 @@ app.post('/', async function(req, res){
       dict[item.id].push(item.quote);
     } else{
       dict[item.id] = [item.quote];
-      nameDict[item.id] = [item.title]
+      // nameDict[item.id] = [item.title]
+      nameDict[item.id] = item.title
       ids.push(item.id);
     }
   }
