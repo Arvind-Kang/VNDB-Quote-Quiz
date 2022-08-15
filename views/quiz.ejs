@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css">
+    <title>Guess the quote</title>
+  </head>
+  <body>
+    <h1>Guess The VN</h1>
+    <br>
+    <p>Quote</p>
+    <br>
+
+        <div class="autocomplete" style="width:300px;">
+          <input id="myInput" type="text" name="myCountry" placeholder="VN name">
+        </div>
+      <input type="submit" onclick="displayRes()">
+
+  </body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="script.js"></script>
+  <script>
+    var dict = <%- dict %>;
+    var nameDict = <%- nameDict %>;
+    var currentID;
+    var currentTitle;
+    loadQuote()
+
+
+    function loadQuote(){
+      //select random vn
+      //fuck it coding sins time - make an array of all the keys in the nameDict
+      var vnids = [];
+      for (let k in nameDict) {
+        vnids.push(k)
+      }
+      //now we get a random index of the array
+
+      var index = Math.floor(Math.random() * vnids.length);
+      //get the vn id
+      var vn = vnids[index]
+      currentID = vn;
+      currentTitle = nameDict[vn]
+      var quotes = dict[vn]
+      index = Math.floor(Math.random() * quotes.length);
+      var quote = quotes[index]
+
+      //update the html with the quote
+      $("p").text(quote)
+      var countries = []
+      for (let h in nameDict) {
+        countries.push(nameDict[h])
+      }
+      autocomplete(document.getElementById("myInput"), countries);
+      console.log(quote)
+    }
+
+    function displayRes(){
+      var userAnswer = document.getElementById("myInput").value;
+      if (userAnswer == currentTitle){
+        alert("correct")
+      } else {
+        alert("Wrong \nThe correct answer was :" +  currentTitle)
+      }
+      loadQuote();
+    }
+  </script>
+</html>
