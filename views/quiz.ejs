@@ -22,6 +22,7 @@
   <script>
     var dict = <%- dict %>;
     var nameDict = <%- nameDict %>;
+    console.log(nameDict)
     var currentID;
     var currentTitle;
     loadQuote()
@@ -47,20 +48,21 @@
 
       //update the html with the quote
       $("p").text(quote)
-      var countries = []
-      for (let h in nameDict) {
-        countries.push(nameDict[h])
+      var titles = []
+      for (let g in nameDict) {
+        titles = titles.concat(nameDict[g])
       }
-      autocomplete(document.getElementById("myInput"), countries);
-      console.log(quote)
+      console.log(titles)
+      autocomplete(document.getElementById("myInput"), titles);
+      console.log(currentTitle)
     }
 
     function displayRes(){
       var userAnswer = document.getElementById("myInput").value;
-      if (userAnswer == currentTitle){
+      if (currentTitle.includes(userAnswer)){
         alert("correct")
       } else {
-        alert("Wrong \nThe correct answer was :" +  currentTitle)
+        alert("Wrong \nThe correct answer was :" +  currentTitle[0])
       }
       loadQuote();
     }

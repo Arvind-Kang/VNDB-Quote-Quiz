@@ -26,10 +26,24 @@ app.get('/', (req, res) => {
 
 app.post('/', async function(req, res){
   var id = String(req.body.apiRequest);
-  let vnList = await call("get ulist basic, (uid=" + id +") {\"results\":100}")
-  var obj = (vnList.items)
+
+  var more = true;
+  var page = 1
+  var o;
+  var vnList = [];
+  while (more == true){
+    o = await call("get ulist basic, (uid=" + id +") {\"page\":"+ page +",\"results\":100}")
+    console.log(o)
+    vnList = vnList.concat(o.items);
+    more = o.more
+    page+=1
+  }
+
+
+
+
   var vnids = []
-  for (var vn of obj)
+  for (var vn of vnList)
   {
     vnids.push(vn.vn)
   }
@@ -49,14 +63,42 @@ app.post('/', async function(req, res){
 
   var dict = {};
   var nameDict = {}
+  var ids = []
   for (var item of quoteList)
   {
     if (item.id in dict){
       dict[item.id].push(item.quote);
     } else{
       dict[item.id] = [item.quote];
-      nameDict[item.id] = item.title
+      nameDict[item.id] = [item.title]
+      ids.push(item.id);
     }
+  }
+
+  more = true;
+  page = 1
+  var z;
+  var aliasesList = [];
+  while (more == true){
+    z = await call("get vn details (id=[" + ids.toString() +"]) {\"page\":"+ page +",\"results\":25,\"sort\":\"id\"}");
+    aliasesList = aliasesList.concat(z.items);
+    more = z.more
+    page+=1
+  }
+
+  for (var item of aliasesList)
+  {
+    var wiki = item.links.wikipedia
+    var ali = item.aliases
+
+    if (wiki && ali){
+      nameDict[item.id] = nameDict[item.id].concat([wiki],(ali).split("\n"));
+    }else if (wiki) {
+      nameDict[item.id] = nameDict[item.id].concat([wiki]);
+    }else if (ali){
+      nameDict[item.id] = nameDict[item.id].concat((ali).split("\n"));
+    }
+
   }
   res.render('quiz', {dict: JSON.stringify(dict), nameDict: JSON.stringify(nameDict)});
 
