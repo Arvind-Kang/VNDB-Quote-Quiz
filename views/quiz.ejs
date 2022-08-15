@@ -50,7 +50,8 @@
       $("p").text(quote)
       var titles = []
       for (let g in nameDict) {
-        titles = titles.concat(nameDict[g])
+      //  titles = titles.concat(nameDict[g])
+          titles.push(nameDict[g])
       }
       console.log(titles)
       autocomplete(document.getElementById("myInput"), titles);

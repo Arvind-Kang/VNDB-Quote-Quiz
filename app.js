@@ -73,32 +73,32 @@ app.post('/', async function(req, res){
     }
   }
 
-  more = true;
-  page = 1
-  var z;
-  var aliasesList = [];
-  while (more == true){
-    z = await call("get vn details (id=[" + ids.toString() +"]) {\"page\":"+ page +",\"results\":25,\"sort\":\"id\"}");
-    console.log(z)
-    aliasesList = aliasesList.concat(z.items);
-    more = z.more
-    page+=1
-  }
-
-  for (var item of aliasesList)
-  {
-    var wiki = item.links.wikipedia
-    var ali = item.aliases
-
-    if (wiki && ali){
-      nameDict[item.id] = nameDict[item.id].concat([wiki],(ali).split("\n"));
-    }else if (wiki) {
-      nameDict[item.id] = nameDict[item.id].concat([wiki]);
-    }else if (ali){
-      nameDict[item.id] = nameDict[item.id].concat((ali).split("\n"));
-    }
-
-  }
+  // more = true;
+  // page = 1
+  // var z;
+  // var aliasesList = [];
+  // while (more == true){
+  //   z = await call("get vn details (id=[" + ids.toString() +"]) {\"page\":"+ page +",\"results\":25,\"sort\":\"id\"}");
+  //   console.log(z)
+  //   aliasesList = aliasesList.concat(z.items);
+  //   more = z.more
+  //   page+=1
+  // }
+  //
+  // for (var item of aliasesList)
+  // {
+  //   var wiki = item.links.wikipedia
+  //   var ali = item.aliases
+  //
+  //   if (wiki && ali){
+  //     nameDict[item.id] = nameDict[item.id].concat([wiki],(ali).split("\n"));
+  //   }else if (wiki) {
+  //     nameDict[item.id] = nameDict[item.id].concat([wiki]);
+  //   }else if (ali){
+  //     nameDict[item.id] = nameDict[item.id].concat((ali).split("\n"));
+  //   }
+  //
+  // }
   res.render('quiz', {dict: JSON.stringify(dict), nameDict: JSON.stringify(nameDict)});
 
 });
